@@ -1,4 +1,4 @@
-package com.shopping.shoppingapp.dto;
+package com.shopping.shoppingapp.auth.dto;
 
 import lombok.Data;
 

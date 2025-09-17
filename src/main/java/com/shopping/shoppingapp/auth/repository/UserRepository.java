@@ -1,7 +1,7 @@
-package com.shopping.shoppingapp.repository;
+package com.shopping.shoppingapp.auth.repository;
 
 
-import com.shopping.shoppingapp.entities.User;
+import com.shopping.shoppingapp.auth.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

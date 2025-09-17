@@ -1,4 +1,4 @@
-package com.shopping.shoppingapp.entities;
+package com.shopping.shoppingapp.auth.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
