@@ -1,11 +1,14 @@
 package com.shopping.shoppingapp.auth.dto;
 
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class AuthResponse {
     private String message;
+    private String token;
+    private UserDto user;
 }

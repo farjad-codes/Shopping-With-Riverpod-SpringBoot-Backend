@@ -1,26 +1,25 @@
 package com.shopping.shoppingapp.auth.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
 @Table(name = "users")
-@Getter @Setter
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(nullable=false, unique = true)
-    private String email;
-
-    @Column(nullable=false)
+    @NotBlank
     private String name;
 
-    @Column(nullable=false)
+    @Email @NotBlank
+    @Column(unique = true)
+    private String email;
+
+    @NotBlank
     private String password;
 }

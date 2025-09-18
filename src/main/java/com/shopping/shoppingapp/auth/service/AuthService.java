@@ -1,47 +1,60 @@
 package com.shopping.shoppingapp.auth.service;
 
-import com.shopping.shoppingapp.auth.dto.LoginRequest;
-import com.shopping.shoppingapp.auth.dto.RegisterRequest;
+import com.shopping.shoppingapp.auth.dto.AuthRequest;
 import com.shopping.shoppingapp.auth.dto.AuthResponse;
+import com.shopping.shoppingapp.auth.dto.UserDto;
 import com.shopping.shoppingapp.auth.entities.User;
 import com.shopping.shoppingapp.auth.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.shopping.shoppingapp.auth.security.JwtUtil;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
-    public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            return new AuthResponse("Email already in use");
+    public AuthResponse register(AuthRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already registered");
         }
 
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .password(encoder.encode(request.getPassword()))
                 .build();
 
         userRepository.save(user);
-        return new AuthResponse("User registered successfully");
+
+        String token = JwtUtil.generateToken(user.getEmail());
+
+        return AuthResponse.builder()
+                .message("Registration successful")
+                .token(token)
+                .user(UserDto.fromEntity(user))
+                .build();
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public AuthResponse login(AuthRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
-        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return new AuthResponse("Invalid credentials");
+        if (!encoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Invalid email or password");
         }
 
-        return new AuthResponse("Login successful");
+        String token = JwtUtil.generateToken(user.getEmail());
+
+        return AuthResponse.builder()
+                .message("Login successful")
+                .token(token)
+                .user(UserDto.fromEntity(user))
+                .build();
     }
 }
