@@ -1,22 +1,17 @@
 package com.shopping.shoppingapp.product.dto;
 
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.List;
+
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class ProductRequest {
-    @NotBlank
+public class ProductDto {
+    private Long id;
     private String title;
-
     private String description;
-
     private String imageUrl;
-
-    @NotNull
     private Double price;
-
-    @NotBlank
-    private String categoryName; // reference by category name
+    private String categoryName;
+    private List<ReviewDto> reviews;
 }

@@ -1,4 +1,7 @@
 package com.shopping.shoppingapp.common.response;
 
-public class ApiResponse {
-}
+// ApiResponse.java
+public record ApiResponse<T>(
+        String message,
+        T data
+) {}
